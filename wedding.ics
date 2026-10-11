@@ -3,9 +3,11 @@ VERSION:2.0
 PRODID:-//wedding//FA
 BEGIN:VEVENT
 UID:wedding-invite@local
-DTSTAMP:20261011T110100Z
+DTSTAMP:20261011T173154Z
 DTSTART:20261103T153000Z
-DTEND:20261103T200000Z
+DTEND:20261103T203000Z
 SUMMARY:عروسی سعید و محدثه
+LOCATION:باغ پارادایس - شیراز، پل صنایع، به سمت اکبرآباد، دوربرگردان دوم، سمت راست، ۱۰ متری حشمت‌الله دینکانی، کوچه ۸
+DESCRIPTION:https://nshn.ir/0d2bg0D9pFrLbi
 END:VEVENT
 END:VCALENDAR
