@@ -7,7 +7,7 @@
 <meta name="description" content="سه‌شنبه ۱۲ آبان ۱۴۰۵ — باغ پارادایس">
 <meta property="og:title" content="دعوت به جشن عروسی سعید و محدثه">
 <meta property="og:description" content="سه‌شنبه ۱۲ آبان ۱۴۰۵ — باغ پارادایس">
-
+<meta property="og:image" content="https://ali1far.github.io/wedding/photos/cover.jpg"><meta property="og:url" content="https://ali1far.github.io/wedding/">
 <meta name="theme-color" content="#f4efe6">
 <link rel="preload" href="fonts/NotoNastaliqUrdu-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -1689,6 +1689,37 @@
     setTimeout(function () { p.remove(); }, 14000);
   }
 
+  // Slow automatic scroll from the top of the card down to the end.
+  // A touch, wheel or key only pauses it; 2 s after the guest lets go it carries on
+  // from wherever they left the page.
+  var SCROLL_SPEED = 40;   // pixels per second
+  var RESUME_AFTER = 2000; // ms of no interaction before scrolling again
+  function autoScroll() {
+    var root = document.documentElement;
+    var y = window.scrollY, last = null, expected = null, pausedUntil = 0;
+    function hold() { pausedUntil = performance.now() + RESUME_AFTER; }
+    ["wheel", "touchstart", "touchmove", "touchend", "mousedown", "keydown"].forEach(function (ev) {
+      window.addEventListener(ev, hold, { passive: true });
+    });
+    root.style.scrollBehavior = "auto";  // the page's smooth-scroll CSS would fight per-frame steps
+    function step(now) {
+      requestAnimationFrame(step);
+      // the page moved without us (scrollbar drag, momentum after a swipe, …): treat as interaction
+      if (expected !== null && Math.abs(window.scrollY - expected) > 2) hold();
+      if (now < pausedUntil) { last = null; expected = null; return; }
+      if (last === null) y = window.scrollY;  // (re)start from where the page is now
+      // cap each step so coming back from another app doesn't jump the page
+      else y += SCROLL_SPEED * Math.min(now - last, 100) / 1000;
+      last = now;
+      var max = root.scrollHeight - window.innerHeight;
+      y = Math.min(y, max);
+      if (window.scrollY >= max - 1 && y >= max) { expected = null; return; }  // at the end: just wait
+      window.scrollTo(0, Math.min(y, max));
+      expected = window.scrollY;
+    }
+    requestAnimationFrame(step);
+  }
+
   // Envelope: seal pops → flap opens → letter slides up → card appears
   var env = document.getElementById("env");
   var opened = false;
@@ -1705,6 +1736,7 @@
       if (!reduce) {
         for (var i = 0; i < 12; i++) setTimeout(petal, i * 250);
         setInterval(petal, 1800);
+        setTimeout(autoScroll, 1500);  // let the top of the card be seen first
       }
     }, reduce ? 50 : 2700);
   }
